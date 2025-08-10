@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fusion de Blobs - Jeu de Blobs Satisfaisant</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="ui">
+            <div id="score">Score : <span id="score-value">0</span></div>
+            <div id="size">Taille: <span id="size-value">1.0x</span></div>
+        </div>
+        
+        <canvas id="game-canvas"></canvas>
+        
+        <div id="game-over" class="hidden" tabindex="-1">
+            <h1> Maître des Blobs! </h1>
+            <p>Score Final: <span id="final-score">0</span></p>
+            <p>Taille Max: <span id="final-size">1.0x</span></p>
+            <button id="restart-btn">Rejouer (R)</button>
+        </div>
+        
+        <div id="controls">
+            <p>Touches : Z/S pour vertical ou flèches</p>
+            <p>Absorbez les petits blobs pour grandir !</p>
+        </div>
+    </div>
+    
+    <script src="blob-merge.js"></script>
+</body>
+</html>
