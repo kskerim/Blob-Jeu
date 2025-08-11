@@ -475,62 +475,32 @@ class BlobMergeGame {
     }
 
     drawBackground() {
-        // Fond harmonieux avec dégradé doux
-        const gradient = this.ctx.createRadialGradient(
-            this.canvas.width / 2, this.canvas.height / 3, 0,
-            this.canvas.width / 2, this.canvas.height / 2, Math.max(this.canvas.width, this.canvas.height) * 0.8
-        );
-        gradient.addColorStop(0, '#667eea');
-        gradient.addColorStop(0.4, '#764ba2'); 
-        gradient.addColorStop(0.8, '#f093fb');
-        gradient.addColorStop(1, '#667eea');
+        // Fond sombre et subtil - tons neutres foncés
+        const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+        gradient.addColorStop(0, '#373430');    // Gris-brun foncé
+        gradient.addColorStop(0.3, '#2d2b27');  // Brun très sombre
+        gradient.addColorStop(0.7, '#323029');  // Gris olive foncé
+        gradient.addColorStop(1, '#38352f');    // Taupe foncé
         
         this.ctx.fillStyle = gradient;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Superposition pour adoucir
-        const overlay = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
-        overlay.addColorStop(0, 'rgba(255, 255, 255, 0.1)');
-        overlay.addColorStop(0.5, 'rgba(255, 255, 255, 0.05)');
-        overlay.addColorStop(1, 'rgba(0, 0, 0, 0.1)');
+        const time = Date.now() * 0.00008; // Très lent et discret
         
-        this.ctx.fillStyle = overlay;
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        // Vagues ultra-subtiles (3 couches)
+        this.ctx.globalAlpha = 0.03; // Très discret
+        this.ctx.strokeStyle = '#4a4741';
+        this.ctx.lineWidth = 1;
         
-        // Effets visuels harmonieux
-        const time = Date.now() * 0.0008;
-        
-        // Bulles flottantes douces
-        for (let i = 0; i < 6; i++) {
-            const x = (i * 180 + time * 25) % (this.canvas.width + 100);
-            const y = 80 + Math.sin(time * 0.7 + i * 1.2) * 60 + (i * 120) % (this.canvas.height - 160);
-            const alpha = 0.15 + Math.sin(time * 1.5 + i) * 0.08;
-            const size = 8 + Math.sin(time * 1.2 + i) * 4;
-            
-            // Bulle avec dégradé interne
-            const bubbleGradient = this.ctx.createRadialGradient(x - size/3, y - size/3, 0, x, y, size);
-            bubbleGradient.addColorStop(0, `rgba(255, 255, 255, ${alpha * 0.8})`);
-            bubbleGradient.addColorStop(0.7, `rgba(200, 220, 255, ${alpha * 0.4})`);
-            bubbleGradient.addColorStop(1, `rgba(150, 200, 255, ${alpha * 0.2})`);
-            
-            this.ctx.fillStyle = bubbleGradient;
+        for (let layer = 0; layer < 3; layer++) {
             this.ctx.beginPath();
-            this.ctx.arc(x, y, size, 0, Math.PI * 2);
-            this.ctx.fill();
-        }
-        
-        // Vagues subtiles
-        this.ctx.globalAlpha = 0.08;
-        this.ctx.strokeStyle = '#ffffff';
-        this.ctx.lineWidth = 2;
-        
-        for (let i = 0; i < 2; i++) {
-            this.ctx.beginPath();
-            for (let x = 0; x <= this.canvas.width; x += 10) {
-                const y = this.canvas.height * 0.3 + i * 200 + 
-                         Math.sin((x + time * 60) * 0.01 + i) * 40 +
-                         Math.sin((x + time * 40) * 0.005 + i) * 20;
-                         
+            for (let x = 0; x <= this.canvas.width; x += 12) {
+                const baseY = this.canvas.height * (0.15 + layer * 0.3);
+                const wave1 = Math.sin((x + time * 25) * 0.005 + layer) * 10;
+                const wave2 = Math.sin((x + time * 15) * 0.008 + layer * 2) * 5;
+                const wave3 = Math.sin((x + time * 35) * 0.003 + layer * 1.5) * 3;
+                const y = baseY + wave1 + wave2 + wave3;
+                
                 if (x === 0) {
                     this.ctx.moveTo(x, y);
                 } else {
@@ -538,6 +508,38 @@ class BlobMergeGame {
                 }
             }
             this.ctx.stroke();
+        }
+        
+        // Effet de brume très discret
+        this.ctx.globalAlpha = 0.02;
+        for (let i = 0; i < 6; i++) {
+            const x = (i * 160 + time * 15) % (this.canvas.width + 120);
+            const baseY = 80 + (i * 100) % (this.canvas.height - 160);
+            const mistOffset = Math.sin(time * 1.0 + i * 0.3) * 12;
+            const y = baseY + mistOffset;
+            
+            // Petites particules de brume
+            const mistLength = 10 + Math.sin(time + i) * 3;
+            
+            this.ctx.strokeStyle = '#434039';
+            this.ctx.lineWidth = 0.5;
+            this.ctx.beginPath();
+            this.ctx.moveTo(x, y);
+            this.ctx.lineTo(x + mistLength, y - 1);
+            this.ctx.stroke();
+        }
+        
+        // Points très discrets pour texture minimale
+        this.ctx.globalAlpha = 0.025;
+        for (let i = 0; i < 5; i++) {
+            const x = (i * 220 + time * 6) % (this.canvas.width + 80);
+            const y = 120 + (i * 120) % (this.canvas.height - 240);
+            const pulse = 0.3 + Math.sin(time * 2 + i) * 0.15;
+            
+            this.ctx.fillStyle = '#45423c';
+            this.ctx.beginPath();
+            this.ctx.arc(x, y, pulse, 0, Math.PI * 2);
+            this.ctx.fill();
         }
         
         this.ctx.globalAlpha = 1.0;
